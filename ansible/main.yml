@@ -1,0 +1,66 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Install LA-MP(ython) packages
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+        state: latest
+      loop: [ apache2, libapache2-mod-wsgi-py3,  python3.8-venv]
+
+    # Clone git project & install requirements
+    - name: Clone repo
+      git:
+        repo: "{{ git_repo_ssh }}"
+        dest: "{{ flask_project_folder }}"
+        accept_hostkey: yes
+      become: false
+
+    - name: Install Python requirements
+      pip:
+        requirements: "{{ flask_project_folder }}/requirements.txt"
+        virtualenv: "{{ flask_project_folder }}/venv"
+        virtualenv_command: /usr/bin/python3 -m venv
+
+    # Configure Apache
+    - name: Add apache vhost configuration.
+      template:
+        src: templates/flaskapp_site.conf.j2
+        dest: /etc/apache2/sites-available/flaskapp_site.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify: restart apache
+
+    - name: Add vhost symlink in sites-enabled.
+      file:
+        src: /etc/apache2/sites-available/flaskapp_site.conf
+        dest: /etc/apache2/sites-enabled/flaskapp_site.conf
+        state: link
+        mode: 0644
+      notify: restart apache
+
+    - name: Remove default vhost in sites-enabled.
+      file:
+        path: /etc/apache2/sites-enabled/000-default.conf
+        state: absent
+      notify: restart apache
+
+    # Start Apache
+    - name: Ensure Apache has selected state and enabled on boot.
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+
+  handlers:
+    - name: restart apache
+      service:
+        name: apache2
+        state: restarted

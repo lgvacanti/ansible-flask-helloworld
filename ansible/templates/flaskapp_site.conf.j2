@@ -1,0 +1,15 @@
+<VirtualHost *:80>
+    DocumentRoot {{ flask_project_folder }}
+
+    WSGIDaemonProcess flaskapp threads=5 
+    WSGIScriptAlias / {{ flask_project_folder }}/flaskapp.wsgi
+    WSGIApplicationGroup %{GLOBAL}
+    <Directory {{ flask_project_folder }}>
+         WSGIProcessGroup flaskapp
+         WSGIApplicationGroup %{GLOBAL}
+         Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
