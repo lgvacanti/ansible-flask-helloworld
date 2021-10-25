@@ -27,3 +27,10 @@ To do this:
 Host example.com
   ForwardAgent yes
 ```
+
+## Terraform steps
+
+1. Create a GCP project
+2. Create a service account with the Project>Editor role
+3. Create and download a key for the service account
+4. Enable Compute Engine API
