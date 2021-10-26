@@ -1,4 +1,4 @@
-# ansible-flask-helloworld
+# terraform-ansible-flask-helloworld
 
 An example repository for deploying a simple Flask + Apache app with Ansible on a GCP (Google Cloud Platform) compute instance provisioned with Terraform.
 
