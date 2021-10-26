@@ -10,14 +10,14 @@ You can let Terraform provision a VM for you, or you can run the playbook on a m
 2. Create a service account with the Project>Editor role
 3. Create and download a key for the service account
 4. Enable Compute Engine API
-5. `cd` into the terraform directory
-6. Make a copy of `example_terraform.tfvars`, rename it to `terraform.tfvars`, and fill in the variables for your setup.
-7. The `/ansible/vars` directory has files that define the variables used for what the Ansible playbook will do, change them to suit your needs.
-8. Run `terraform init`
-9. Run `terraform apply`
-10. Type `yes` and hit enter
-11. If everything goes well, Terraform will output the VM ip address which you can put in your browser to visit the website.
-12. Run `terraform destroy` to destroy the provisioned resources.
+5. The `/ansible/vars` directory has files that define the variables used for what the Ansible playbook will do, change them to suit your needs.
+6. `cd` into the terraform directory
+7. Make a copy of `example_terraform.tfvars`, rename it to `terraform.tfvars`, and fill in the variables for your setup.
+9. Run `terraform init`
+10. Run `terraform apply`
+11. Type `yes` and hit enter
+12. If everything goes well, Terraform will output the VM ip address which you can put in your browser to visit the website.
+13. Run `terraform destroy` to destroy the provisioned resources.
 
 ## Ansible steps
 You only need to follow these steps if you have manually created a VM. If you are using Terraform to provision a VM, Terraform will also run the Ansible playbooks for you.
