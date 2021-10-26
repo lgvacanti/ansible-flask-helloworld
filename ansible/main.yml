@@ -16,9 +16,8 @@
     # Clone git project & install requirements
     - name: Clone repo
       git:
-        repo: "{{ git_repo_ssh }}"
+        repo: "{{ git_repo_clone_link }}"
         dest: "{{ flask_project_folder }}"
-        accept_hostkey: yes
       become: false
 
     - name: Install Python requirements
