@@ -44,4 +44,65 @@ resource "google_compute_instance" "website" {
     }
   }
 
+  # Apply allow http(s) firewall rules to the compute instance so that the server will be accesible via the browser
+  tags = ["http-server", "https-server"]
+
+  # Try a remote exec so that ssh will be up when we do the following local execs
+  provisioner "remote-exec" {
+    connection {
+      type        = "ssh"
+      user        = "root"
+      private_key = file("${var.ssh_private_key_file}")
+      host        = google_compute_address.default.address
+    }
+
+    inline = [
+      "echo SSH should now be up!"
+    ]
+  }
+
+  # Run Ansible initial server setup
+  provisioner "local-exec" {
+    command = <<-EOT
+    ansible-playbook \
+    -u root \
+    -i '${google_compute_address.default.address},' \
+    --private-key ${var.ssh_private_key_file} \
+    initial_server_setup.yml
+    EOT
+
+    working_dir = "../ansible/"
+
+    environment = {
+      ANSIBLE_HOST_KEY_CHECKING = "False"
+      ANSIBLE_FORCE_COLOR       = 1
+    }
+  }
+
+  # Run Ansible website setup
+  provisioner "local-exec" {
+    command = <<-EOT
+    ansible-playbook \
+    -i '${google_compute_address.default.address},' \
+    --private-key ${var.ssh_private_key_file} \
+    main.yml
+    EOT
+
+    working_dir = "../ansible/"
+
+    environment = {
+      ANSIBLE_HOST_KEY_CHECKING = "False"
+      ANSIBLE_FORCE_COLOR       = 1
+    }
+  }
+
 }
+
+
+
+output "public_ip" {
+  value       = google_compute_address.default.address
+  description = "The public IP of the web server"
+}
+
+

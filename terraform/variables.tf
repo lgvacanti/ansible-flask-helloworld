@@ -11,6 +11,11 @@ variable "credentials" {
 }
 
 variable "ssh_key_file" {
-  description = "File that contains the ssh-key you want to add to the VM instance"
+  description = "File that contains the public ssh-key you want to add to the VM instance"
+  type        = string
+}
+
+variable "ssh_private_key_file" {
+  description = "File that contains the private ssh-key corresponding to the public key you want to add to the VM instance"
   type        = string
 }
