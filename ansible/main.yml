@@ -11,7 +11,7 @@
         name: "{{ item }}"
         update_cache: yes
         state: latest
-      loop: [ apache2, libapache2-mod-wsgi-py3,  python3.8-venv]
+      loop: [ apache2, libapache2-mod-wsgi-py3,  python3.8-venv, git]
 
     # Clone git project & install requirements
     - name: Clone repo
