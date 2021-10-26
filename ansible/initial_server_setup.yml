@@ -33,4 +33,6 @@
       authorized_key:
         user: "{{ create_user }}"
         state: present
-        key: "{{ lookup('file', lookup('fileglob', '~/.ssh/*.pub')) }}"
+        key: "{{ lookup('file', item) }}"
+      with_fileglob:
+        - "~/.ssh/*.pub"
