@@ -15,6 +15,12 @@ provider "google" {
   zone    = "us-central1-c"
 }
 
+resource "google_compute_address" "default" {
+  project      = var.project
+  name         = "ip-address"
+  address_type = "EXTERNAL"
+}
+
 resource "google_compute_instance" "website" {
   name         = "website-host"
   machine_type = "e2-micro"
@@ -34,7 +40,7 @@ resource "google_compute_instance" "website" {
     network = "default"
 
     access_config {
-      // Ephemeral public IP
+      nat_ip = google_compute_address.default.address
     }
   }
 
